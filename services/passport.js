@@ -3,6 +3,13 @@ const LocalStrategy = require('passport-local').Strategy;
 const mongoose = require('mongoose');
 const User = mongoose.model('users');
 
+passport.serializeUser((user, done) => {
+
+});
+
+passport.deserializeUser((id, done) => {
+
+});
 
 // Local signup strategy
 passport.use('local-signup', new LocalStrategy(
@@ -12,7 +19,10 @@ passport.use('local-signup', new LocalStrategy(
     passReqToCallback: true
   },
   (req, email, password, done) => {
+    console.log(req.body);
     User.findOne({ 'local.email': email }, (err, user) => {
+      console.log('err', err);
+      console.log('user', user);
       if (err) { return done(err); }
 
       if (user) {
@@ -24,15 +34,10 @@ passport.use('local-signup', new LocalStrategy(
         }).save(err => {
           if (err) { throw err };
         });
+        console.log('newUser', newUser);
         return done(null, newUser);
-        console.log(newUser);
-      }
 
-      // if (!user.validPassword(password)) {
-      //   return done(null, false, { message: 'Incorrect password.' });
-      // }
-      //
-      // return done(null, user);
+      }
     });
   }
 ));
