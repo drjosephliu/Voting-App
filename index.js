@@ -1,10 +1,19 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const keys = require('./config/keys');
+require('./models/User');
+require('./services/passport');
+
+mongoose.connect(keys.mongoURI);
 
 const app = express();
 
 app.use(bodyParser.json());
+
+require('./routes/authRoutes')(app);
 
 app.get('/', (req, res) => {
   res.json({ message: 'hello' });
