@@ -23,24 +23,24 @@ passport.use('local-signup', new LocalStrategy(
     passReqToCallback: true
   },
   (req, email, password, done) => {
-    console.log('req:', req.body);
-
     User.findOne({ 'local.email': email }, (err, user) => {
-      console.log('error:', err);
-      console.log('user:', user);
       if (err) { return done(err); }
 
       if (user) {
-        return done(null, false, { message: 'That email already exists' })
+        console.log('user error:', user);
+        return done(null, false, req.flash('signUpMessage', 'That email is already taken.'));
       } else {
         new User({
           'local.email': email,
           'local.password': password
-        }).save(err => {
-          if (err) { throw err };
-        }).then(user => {
-          console.log('new user:', user);
-          return done(null, user)
+        })
+        .save()
+        .then(user => {
+          done(null, user)
+        })
+        .catch(err => {
+          console.log('error:', err);
+          done(err);
         });
       }
     });

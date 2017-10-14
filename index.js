@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const flash = require('connect-flash');
+const cookieSession = require('cookie-session');
 const keys = require('./config/keys');
 require('./models/User');
 require('./services/passport');
@@ -13,8 +15,17 @@ const app = express();
 
 app.use(bodyParser.json());
 
+
+app.use(
+  cookieSession({
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    keys: [keys.cookieKey]
+  })
+);
+
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
 
 require('./routes/authRoutes')(app);
 

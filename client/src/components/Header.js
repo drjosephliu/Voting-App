@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import LoginModal from './LoginModal';
 
@@ -26,30 +27,50 @@ class Header extends Component {
   }
 
   handleClick = e => {
-     if(!ReactDOM.findDOMNode(this).contains(e.target)) {
-       this.setState({ showLoginModal: false });
+   if(!ReactDOM.findDOMNode(this).contains(e.target)) {
+     this.setState({ showLoginModal: false });
+   }
+  }
+
+  renderContent() {
+   switch(this.props.auth) {
+     case null:
+      return;
+     case false:
+       return [
+         <li key='1'><a onClick={this.toggleLoginModal}>Login</a></li>,
+         <li key='2'><Link to='/signup'>Sign Up</Link></li>
+       ];
+     default:
+       return [
+         <li key='1'>Welcome</li>,
+         <li key='2'><a href='/api/logout'>Logout</a></li>
+       ];
      }
    }
 
 
   render() {
     return (
-    <div>
-      <nav>
-        <div className='nav-wrapper'>
-          <Link to='/' className='left brand-logo'>
-            Voting App
-          </Link>
-          <ul className='right'>
-            <li><a onClick={this.toggleLoginModal}>Login</a></li>
-            <li><Link to='/signup'>Sign Up</Link></li>
-          </ul>
-        </div>
-      </nav>
-      <LoginModal showLoginModal={this.state.showLoginModal} />
-    </div>
+      <div>
+        <nav>
+          <div className='nav-wrapper'>
+            <Link to='/' className='left brand-logo'>
+              Voting App
+            </Link>
+            <ul className='right'>
+              {this.renderContent()}
+            </ul>
+          </div>
+        </nav>
+        <LoginModal showLoginModal={this.state.showLoginModal} />
+      </div>
     )
   }
 }
 
-export default Header;
+function mapStateToProps({ auth }) {
+  return { auth };
+}
+
+export default connect(mapStateToProps)(Header);

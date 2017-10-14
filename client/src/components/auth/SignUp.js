@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { reduxForm, Field } from 'redux-form';
 import validateEmail from '../../utils/validateEmail';
 import FormField from './FormField';
@@ -9,9 +10,8 @@ import * as actions from '../../actions';
 
 class SignUp extends Component {
   onSubmit(values) {
-    console.log(values);
     values.email = values.email.trim();
-    this.props.createUser(values);
+    this.props.createUser(values, this.props.history);
   }
 
   renderFields() {
@@ -52,4 +52,4 @@ SignUp = reduxForm({
   form: 'signupForm'
 })(SignUp);
 
-export default connect(null, actions)(SignUp);
+export default connect(null, actions)(withRouter(SignUp));
