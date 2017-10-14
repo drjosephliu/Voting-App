@@ -9,6 +9,7 @@ import * as actions from '../../actions';
 
 class SignUp extends Component {
   onSubmit(values) {
+    console.log(values);
     values.email = values.email.trim();
     this.props.createUser(values);
   }
@@ -37,7 +38,7 @@ class SignUp extends Component {
 function validate(values) {
   const errors = {};
 
-  errors.username = validateEmail(values.username);
+  errors.email = validateEmail(values.email);
 
   if (values.password !== values.confirmPassword) {
     errors.confirmPassword = 'Must match password';
