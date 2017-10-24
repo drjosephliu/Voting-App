@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CREATE_USER, FETCH_USER, FLASH_MESSAGE, DELETE_MESSAGE, SHOW_FORGOT_PASSWORD_MODAL, HIDE_FORGOT_PASSWORD_MODAL, HAS_ERROR, DELETE_ERROR } from './types';
+import { CREATE_USER, FETCH_USER, FLASH_MESSAGE, DELETE_MESSAGE, SHOW_FORGOT_PASSWORD_MODAL, HIDE_FORGOT_PASSWORD_MODAL } from './types';
 
 export const createUser = (values, history) => async dispatch => {
 
@@ -12,19 +12,9 @@ export const createUser = (values, history) => async dispatch => {
     window.Materialize.toast(res.data.msg, 4000);
   }
   catch(err) {
-    dispatch(hasError(true));
-    // dispatch(flashMessage('Email has already been taken.'));
+    dispatch(flashMessage('Email has already been taken.'));
   }
 };
-
-export const hasError = (bool) => {
-  console.log('errrrr');
-  return { type: HAS_ERROR, payload: bool }
-}
-
-export const deleteError = () => {
-  return { type: DELETE_ERROR, payload: false }
-}
 
 export const flashMessage = msg => {
   return { type: FLASH_MESSAGE, payload: msg };

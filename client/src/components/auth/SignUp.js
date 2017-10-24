@@ -20,22 +20,13 @@ class SignUp extends Component {
     });
   }
 
-  renderErrors() {
-    if (this.props.error) {
-      return (
-        <div className='red-text'>
-          Email has already been taken
-        </div>
-      );
-    }
-  }
-
   render() {
-    console.log('error', this.props.error)
     return (
       <div>
         <h2>Sign Up</h2>
-        {this.renderErrors()}
+        <div className='red-text'>
+          {this.props.msg}
+        </div>
         <form onSubmit={this.props.handleSubmit(this.onSubmit.bind(this))}>
           {this.renderFields()}
           <button type='submit' className='teal btn-flat right white-text'>
@@ -70,8 +61,8 @@ SignUp = reduxForm({
   form: 'signupForm'
 })(SignUp);
 
-function mapStateToProps({ auth, msg, error }) {
-  return { auth, msg, error };
+function mapStateToProps({ auth, msg }) {
+  return { auth, msg };
 }
 
 export default connect(mapStateToProps, actions)(withRouter(SignUp));
