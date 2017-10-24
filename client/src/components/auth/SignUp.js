@@ -10,7 +10,7 @@ import * as actions from '../../actions';
 
 class SignUp extends Component {
   onSubmit(values) {
-    values.email = values.email.trim();
+    if (values.email) { values.email = values.email.trim(); }
     this.props.createUser(values, this.props.history);
   }
 
@@ -20,10 +20,22 @@ class SignUp extends Component {
     });
   }
 
+  renderErrors() {
+    if (this.props.error) {
+      return (
+        <div className='red-text'>
+          Email has already been taken
+        </div>
+      );
+    }
+  }
+
   render() {
+    console.log('error', this.props.error)
     return (
       <div>
         <h2>Sign Up</h2>
+        {this.renderErrors()}
         <form onSubmit={this.props.handleSubmit(this.onSubmit.bind(this))}>
           {this.renderFields()}
           <button type='submit' className='teal btn-flat right white-text'>
@@ -41,8 +53,14 @@ function validate(values) {
   errors.email = validateEmail(values.email);
 
   if (values.password !== values.confirmPassword) {
-    errors.confirmPassword = 'Must match password';
+    errors.confirmPassword = 'Passwords must match';
   }
+
+  _.each(signUpFields, ({ name }) => {
+    if (!values[name]) {
+      errors[name] = 'You must provide a value';
+    }
+  });
 
   return errors;
 }
@@ -52,4 +70,8 @@ SignUp = reduxForm({
   form: 'signupForm'
 })(SignUp);
 
-export default connect(null, actions)(withRouter(SignUp));
+function mapStateToProps({ auth, msg, error }) {
+  return { auth, msg, error };
+}
+
+export default connect(mapStateToProps, actions)(withRouter(SignUp));

@@ -5,12 +5,16 @@
   "proxy": {
     "/api/*": {
       "target": "http://localhost:5000"
+    },
+    "/auth/*": {
+      "target": "http://localhost:5000"
     }
   },
   "dependencies": {
     "axios": "^0.16.2",
     "lodash": "^4.17.4",
     "materialize-css": "^0.100.2",
+    "materialize-social": "^1.0.3",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-redux": "^5.0.6",

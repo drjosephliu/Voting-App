@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import LoginModal from './LoginModal';
+import * as actions from '../actions';
+import Modal from './auth/Modal';
 
 class Header extends Component {
   constructor(props) {
@@ -29,6 +30,7 @@ class Header extends Component {
   handleClick = e => {
    if(!ReactDOM.findDOMNode(this).contains(e.target)) {
      this.setState({ showLoginModal: false });
+     this.props.dispatch(actions.hideForgotPasswordModal());
    }
   }
 
@@ -63,7 +65,8 @@ class Header extends Component {
             </ul>
           </div>
         </nav>
-        <LoginModal showLoginModal={this.state.showLoginModal} />
+        {!this.props.auth &&
+        <Modal showLoginModal={this.state.showLoginModal} />}
       </div>
     )
   }
@@ -73,4 +76,4 @@ function mapStateToProps({ auth }) {
   return { auth };
 }
 
-export default connect(mapStateToProps)(Header);
+export default connect(mapStateToProps, null)(Header);
