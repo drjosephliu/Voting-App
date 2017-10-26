@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom'
 import { reduxForm, Field } from 'redux-form';
 import FormField from './FormField';
 import * as actions from '../../actions';
@@ -8,16 +7,15 @@ import validateEmail from '../../utils/validateEmail';
 
 class ForgotPassword extends Component {
   onSubmit(values) {
-    this.props.forgotPassword(values, this.props.history);
+    this.props.forgotPassword(values);
   }
 
   render() {
-    console.log('msg:', this.props.msg);
     return (
       <div>
         <h2>Forgot Password</h2>
         <div className='red-text'>
-          {this.props.msg}
+          {this.props.msg.forgotPassword}
         </div>
         <form onSubmit={this.props.handleSubmit(this.onSubmit.bind(this))}>
           <Field type='text' label='Email' name='email' component={FormField} />
@@ -49,4 +47,4 @@ function mapStateToProps({ msg }) {
   return { msg };
 }
 
-export default connect(mapStateToProps, actions)(withRouter(ForgotPassword));
+export default connect(mapStateToProps, actions)(ForgotPassword);

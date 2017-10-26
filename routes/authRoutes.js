@@ -4,24 +4,75 @@ const mongoose = require('mongoose');
 const User = mongoose.model('users');
 const bcrypt = require('bcrypt');
 
-const sgMail = require('@sendgrid/mail');
 const keys = require('../config/keys');
+
+const sgMail = require('@sendgrid/mail');
+const passwordResetTemplate = require('../services/emailTemplates/passwordResetTemplate');
+const accountVerificationTemplate = require('../services/emailTemplates/accountVerificationTemplate');
 
 sgMail.setApiKey(keys.sendGridKey);
 
 
 
 module.exports = app => {
+  // app.post(
+  //   '/api/signup',
+  //   passport.authenticate('local-signup'),
+  //   (req, res) => {
+  //     const email = req.user.local.email;
+  //
+  //     User.findOne({ 'local.email': email})
+  //       .then(user => {
+  //
+  //
+  //         crypto.randomBytes(20, (err, buf) => {
+  //           const token = buf.toString('hex');
+  //
+  //           bcrypt.hash(token, 12)
+  //             .then(hash => {
+  //               user.local.verificationToken = hash;
+  //               user.local.verificationTokenExpires = Date.now() + (1000 * 60 * 60);
+  //
+  //               user.save()
+  //                 .then(user => {
+  //
+  //                   sgMail.send(accountVerificationTemplate(req, token));
+  //                   res.send(user)
+  //                 });
+  //             });
+  //         });
+  //       });
+  //   }
+  // );
+
   app.post(
     '/api/signup',
-    passport.authenticate('local-signup'),
     (req, res) => {
+      passport.authenticate('local-signup', (err, user, info) => {
+        // Return error message if email already taken
+        if (!user) return res.status(400).send(info);
+        // Otherwise create verification token and email the hashed token
+        User.findOne({ 'local.email': req.body.email })
+          .then(user => {
+            crypto.randomBytes(20, (err, buf) => {
+              const token = buf.toString('hex');
 
-      const user = {
-        user: req.user,
-        msg: 'You have successfully signed up!'
-      };
-      res.send(user);
+              bcrypt.hash(token, 12)
+                .then(hash => {
+
+                  user.local.verificationToken = hash;
+                  user.local.verificationTokenExpires = Date.now() + (1000 * 60 * 60);
+
+                  user.save()
+                    .then(user => {
+
+                      sgMail.send(accountVerificationTemplate(req, token));
+                      res.send(info);
+                    });
+                });
+            });
+          });
+      })(req, res);
     }
   );
 
@@ -29,17 +80,22 @@ module.exports = app => {
     res.send(req.user);
   });
 
+  // app.post(
+  //   '/api/login',
+  //   passport.authenticate('local-login'),
+  //   (req, res) => {
+  //     console.log('login req:', req);
+  //     res.send(req.user);
+  //   }
+  // );
+
   app.post(
     '/api/login',
-    passport.authenticate('local-login'),
     (req, res) => {
-      console.log(req.user);
-      const user = {
-        user: req.user,
-        msg: `Welcome back ${req.user.local.email}!`
-      };
-
-      res.send(user);
+      passport.authenticate('local-login', (err, user, info) => {
+        if (!user) return res.status(400).send(info);
+        res.send(user);
+      })(req, res);
     }
   );
 
@@ -81,40 +137,19 @@ module.exports = app => {
     User.findOne({ 'local.email': req.body.email })
       .then(user => {
 
-        if(!user) {
-          return res.status(422).send('No account with that email address exists');
-        }
+        if(!user) return res.status(400).send('No account with that email address exists');
 
         crypto.randomBytes(20, (err, buf) => {
-          var token = buf.toString('hex');
+          const token = buf.toString('hex');
 
           bcrypt.hash(token, 12, (err, tokenHash) => {
             user.local.resetToken = tokenHash;
             user.local.resetTokenExpires = Date.now() + (1000 * 60 * 60);
 
-            user.save()
-              .then(user => {
-                console.log('saved user:', user);
-              });
+            user.save();
           });
 
-          const msg = {
-            to: req.body.email,
-            from: 'reset-password@drhectapus.com',
-            subject: 'Reset Your Password',
-            html: `
-              <p>Hello.</p>
-
-              <p>Looks like you have forgotten your password</p>
-
-              <p>Thankfully, you can reset your password by following this link:</p>
-
-              <p><a href='http://${req.headers.host}/reset/${req.body.email}/${token}'>Reset Password</a></p>
-
-              <p>- DrHectapus</p>
-            `
-          };
-          sgMail.send(msg);
+          sgMail.send(passwordResetTemplate(req, token));
           res.send('We have sent you a reset link to your email');
         });
       });
@@ -123,14 +158,102 @@ module.exports = app => {
   app.get('/api/reset/:email/:token', (req, res) => {
     User.findOne({ 'local.email': req.params.email })
       .then(user => {
-        if (!user) return res.status(422).send('User not found');
+        if (!user) return res.status(400).send('User not found');
 
         bcrypt.compare(req.params.token, user.local.resetToken, (err, result) => {
           if (err) return res.send(err);
-          res.send(result);
+
+          if (Date.now() > user.local.resetTokenExpires) {
+            return res.status(400).send('Reset token has expired');
+          } else {
+            if (!result) return res.status(400).send('Invalid token');
+
+            user.local.resetToken = null;
+            user.local.resetTokenExpires = null;
+            return res.send(result);
+          }
         });
       });
   });
 
+  app.post('/api/reset', (req, res) => {
 
+    User.findOne({ 'local.email': req.body.email })
+      .then(user => {
+
+        if (!user) return res.status(400).send('Invalid email');
+
+        bcrypt.hash(req.body.password, 12)
+          .then(hash => {
+
+            if (Date.now() <= user.local.resetTokenExpires) {
+              user.local.password = hash;
+
+              user.save()
+                .then(user => res.send(user));
+            } else {
+              return res.status(400).send('Token has expired');
+            }
+          });
+      });
+  });
+
+  // Email verification link - check if token is valid and hasn't expired
+  app.get('/api/verify/:email/:token', (req, res) => {
+
+    User.findOne({ 'local.email': req.params.email })
+      .then(user => {
+
+        if (!user) return res.status(400).send('User not found');
+
+        if (Date.now() >= user.local.verificationTokenExpires) {
+          return res.status(400).send('Token has expired')
+        } else {
+          bcrypt.compare(req.params.token, user.local.verificationToken)
+            .then(result => {
+
+              if (!result) return res.status(400).send('Invalid token');
+
+              user.active = true;
+
+              user.save()
+                .then(user => {
+                  res.send(user)
+                });
+            });
+        }
+      });
+  });
+
+  // Resend verification token
+  app.post('/api/verify', (req, res) => {
+    console.log('email:', req.body.email);
+
+    const email = req.body.email;
+
+    User.findOne({ 'local.email': email})
+      .then(user => {
+
+        if (!user) return res.status(400).send('User not found');
+
+        if (user.active) return res.send('User already verified!')
+
+        crypto.randomBytes(20, (err, buf) => {
+          const token = buf.toString('hex');
+
+          bcrypt.hash(token, 12)
+            .then(hash => {
+              user.local.verificationToken = hash;
+              user.local.verificationTokenExpires = Date.now() + (1000 * 60 * 60);
+
+              user.save()
+                .then(user => {
+
+                  sgMail.send(accountVerificationTemplate(req, token));
+                  res.send('New token sent to your email')
+                });
+            });
+        });
+      });
+  });
 };

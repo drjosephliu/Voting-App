@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import { reduxForm, Field } from 'redux-form';
@@ -7,10 +8,9 @@ import FormField from './FormField';
 import resetPasswordFields from './resetPasswordFields';
 
 class ResetPassword extends Component {
-
   componentDidMount() {
     const { email,  token } = this.props.match.params;
-    this.props.checkToken(email, token);
+    this.props.checkResetToken(email, token);
   }
 
   renderFields() {
@@ -19,8 +19,33 @@ class ResetPassword extends Component {
     });
   }
 
-  onSubmit(values) {
+  renderContent() {
+    const { email } = this.props.match.params;
 
+    if (!this.props.msg.token) {
+      return (
+        <form onSubmit={this.props.handleSubmit(this.onSubmit.bind(this))}>
+          {this.renderFields()}
+          <button type='submit' className='btn teal waves-effect waves-light'>Submit</button>
+        </form>
+      );
+    } else {
+      return (
+        <div>
+          <div className='red-text'>
+            {this.props.msg.token}
+          </div>
+        </div>
+      );
+    }
+  }
+
+  onSubmit(values) {
+    const loginInfo = {
+      email: this.props.match.params.email,
+      password: values.confirmPassword
+    }
+    this.props.resetPassword(loginInfo, this.props.history);
   }
 
 
@@ -28,10 +53,7 @@ class ResetPassword extends Component {
     return(
       <div>
         <h2>Reset Password</h2>
-        <form onSubmit={this.props.handleSubmit(values => console.log(values))}>
-          {this.renderFields()}
-          <button type='submit' className='btn teal waves-effect waves-light'>Submit</button>
-        </form>
+        {this.renderContent()}
       </div>
     );
   }
@@ -57,4 +79,8 @@ ResetPassword = reduxForm({
   form: 'resetPasswordForm'
 })(ResetPassword);
 
-export default connect(null, actions)(ResetPassword);
+function mapStateToProps({ msg }) {
+  return { msg };
+}
+
+export default connect(mapStateToProps, actions)(withRouter(ResetPassword));

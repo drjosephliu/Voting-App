@@ -5,16 +5,15 @@ const FacebookStrategy = require('passport-facebook').Strategy;
 const mongoose = require('mongoose');
 const User = mongoose.model('users');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const keys = require('../config/keys');
 
 passport.serializeUser((user, done) => {
-  console.log('serialize:', user.id);
   done(null, user.id);
 });
 
 passport.deserializeUser((id, done) => {
   User.findById(id).then(user => {
-    console.log('deserialize:', user);
     done(null, user);
   });
 });
@@ -26,27 +25,25 @@ passport.use('local-signup', new LocalStrategy(
     passwordField: 'password'
   },
   (email, password, done) => {
+
     User.findOne({ 'local.email': email })
       .then(user => {
         if (user) {
-          return done(null, false);
+          return done(null, false, 'Email has already been taken');
         } else {
 
           const newUser = new User();
 
           newUser.local.email = email;
 
-          newUser.generateHash(password, (err, hash) => {
-            newUser.local.password = hash;
-          });
-
-          newUser.save()
-            .then(user => done(null, user))
-            .catch(err => done(err));
+          bcrypt.hash(password, 10)
+            .then(hash => {
+              newUser.local.password = hash;
+              newUser.save()
+                .then(user => done(null, user, 'We have emailed you a verification link'));
+            });
         }
-      })
-      .catch(err => done(err));
-
+      });
   }
 ));
 
@@ -57,17 +54,19 @@ passport.use('local-login', new LocalStrategy(
     passwordField: 'password'
   },
   (email, password, done) => {
+
     User.findOne({ 'local.email': email })
       .then(user => {
-        if (!user) return done(null, false);
+        if (!user) return done(null, false, 'No account with that email exists');
 
-        user.validPassword(password, (err, res) => {
-          if (err) return done(err);
-          if (!res) return done(null, false);
-          done(null, user);
-        });
-      })
-      .catch(err => done(err));
+        if (!user.active) return done(null, false, 'Please verify account first');
+
+        bcrypt.compare(password, user.local.password)
+          .then(result => {
+            if (!result) return done(null, false, 'Wrong password');
+            done(null, user)
+          });
+      });
   }
 ));
 
@@ -88,13 +87,8 @@ passport.use(
           } else {
             new User({ 'google.id': profile.id})
               .save()
-              .then(user => {
-                done(null, user);
-              })
-              .catch(err => done(err));
-          }
-        })
-        .catch(err => done(err));
+              .then(user => done(null, user));          }
+        });
     }
   )
 );
@@ -116,13 +110,9 @@ passport.use(
           } else {
             new User({ 'facebook.id': profile.id})
               .save()
-              .then(user => {
-                done(null, user);
-              })
-              .catch(err => done(err));
+              .then(user => done(null, user));
           }
-        })
-        .catch(err => done(err));
+        });
     }
   )
 );

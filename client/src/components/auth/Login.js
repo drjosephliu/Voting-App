@@ -24,7 +24,7 @@ class Login extends Component {
       <div>
         <h2>Login</h2>
         <div className='red-text'>
-          {this.props.msg}
+          {this.props.msg.login}
         </div>
         <div className='center-align'>
           <a href='/auth/google'

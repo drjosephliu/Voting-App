@@ -25,7 +25,7 @@ class SignUp extends Component {
       <div>
         <h2>Sign Up</h2>
         <div className='red-text'>
-          {this.props.msg}
+          {this.props.msg.signup}
         </div>
         <form onSubmit={this.props.handleSubmit(this.onSubmit.bind(this))}>
           {this.renderFields()}
