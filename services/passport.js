@@ -78,7 +78,8 @@ passport.use(
     {
       clientID: keys.googleClientID,
       clientSecret: keys.googleClientSecret,
-      callbackURL: '/auth/google/callback'
+      callbackURL: '/auth/google/callback',
+      proxy: true
     },
     (accessToken, refreshToken, profile, done) => {
 
@@ -101,7 +102,8 @@ passport.use(
     {
       clientID: keys.facebookID,
       clientSecret: keys.facebookSecret,
-      callbackURL: '/auth/facebook/callback'
+      callbackURL: '/auth/facebook/callback',
+      proxy: true
     },
     (accessToken, refreshToken, profile, done) => {
 
