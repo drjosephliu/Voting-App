@@ -29,9 +29,6 @@ app.use(passport.session());
 
 require('./routes/authRoutes')(app);
 
-app.get('/', (req, res) => {
-  res.json({ message: 'hello' });
-});
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'));
