@@ -77,6 +77,7 @@ module.exports = app => {
   );
 
   app.get('/api/current_user', (req, res) => {
+    // console.log('fetch:', req);
     res.send(req.user);
   });
 
@@ -93,8 +94,11 @@ module.exports = app => {
     '/api/login',
     (req, res) => {
       passport.authenticate('local-login', (err, user, info) => {
+        console.log('req user:', req.login);
         if (!user) return res.status(400).send(info);
-        res.send(user);
+        req.login(user, (err) => {
+          return res.send(user);
+        });
       })(req, res);
     }
   );
@@ -227,7 +231,6 @@ module.exports = app => {
 
   // Resend verification token
   app.post('/api/verify', (req, res) => {
-    console.log('email:', req.body.email);
 
     const email = req.body.email;
 

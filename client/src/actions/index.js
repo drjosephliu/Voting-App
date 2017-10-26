@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {
-  CREATE_USER,
   FETCH_USER,
   DELETE_MESSAGE,
   SHOW_FORGOT_PASSWORD_MODAL,
@@ -16,12 +15,10 @@ export const createUser = (values, history) => async dispatch => {
     const res = await axios.post('/api/signup', values);
 
     dispatch(deleteMessage());
-    // dispatch({ type: CREATE_USER, payload: res.data });
     history.push('/');
     window.Materialize.toast(res.data, 4000);
   }
   catch(err) {
-    console.log(err.response);
     dispatch(signUpError(err.response.data));
   }
 };
@@ -57,7 +54,6 @@ export const loginUser = (values, history) => async dispatch => {
   try {
     const res = await axios.post('/api/login', values);
 
-    console.log('result:', res);
 
     dispatch(deleteMessage());
     dispatch({ type: FETCH_USER, payload: res.data });
@@ -118,7 +114,8 @@ export const resetPassword = (values, history) => async dispatch => {
 export const checkVerificationToken = (email, token, history) => async dispatch => {
   try {
     const res = await axios.get(`/api/verify/${email}/${token}`);
-    // history.push('/');
+
+    history.push('/');
     dispatch(deleteMessage());
     dispatch({ type: FETCH_USER, payload: res.data });
     window.Materialize.toast(`Welcome ${email} !`, 4000);
@@ -136,6 +133,6 @@ export const resendVerificationToken = email => async dispatch => {
     window.Materialize.toast(res.data, 4000);
   }
   catch(err) {
-    console.log(err);
+    dispatch(tokenError(err.response.data));
   }
 }

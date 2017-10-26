@@ -20,8 +20,6 @@ class ResetPassword extends Component {
   }
 
   renderContent() {
-    const { email } = this.props.match.params;
-
     if (!this.props.msg.token) {
       return (
         <form onSubmit={this.props.handleSubmit(this.onSubmit.bind(this))}>

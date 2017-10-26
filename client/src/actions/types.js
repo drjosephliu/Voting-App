@@ -1,4 +1,3 @@
-export const CREATE_USER = 'create_user';
 export const FETCH_USER = 'fetch_user';
 export const DELETE_MESSAGE = 'delete_message';
 export const SHOW_FORGOT_PASSWORD_MODAL = 'show_forgot_password_modal';

@@ -9,11 +9,13 @@ const crypto = require('crypto');
 const keys = require('../config/keys');
 
 passport.serializeUser((user, done) => {
+  console.log('serialize:', user);
   done(null, user.id);
 });
 
 passport.deserializeUser((id, done) => {
   User.findById(id).then(user => {
+    console.log('deserialize:', user);
     done(null, user);
   });
 });
