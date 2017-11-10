@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const bcrypt = require('bcrypt');
 
 const userSchema = new Schema({
   active: { type: Boolean, default: false },

@@ -7,10 +7,11 @@ import Header from './Header';
 import SignUp from './auth/SignUp';
 import ResetPassword from './auth/ResetPassword';
 import VerifyAccount from './auth/VerifyAccount';
+import NewPoll from './polls/NewPoll';
+import MyPolls from './polls/MyPolls';
 
 const Landing = () => <h2>Landing</h2>;
 const Dashboard = () => <h2>Dashboard</h2>;
-const PollNew = () => <h2>PollNew</h2>;
 
 class App extends Component {
   componentDidMount() {
@@ -26,7 +27,8 @@ class App extends Component {
             <Header />
             <Route exact path='/' component={Landing} />
             <Route exact path='/dashboard' component={Dashboard} />
-            <Route path='/polls/new' component={PollNew} />
+            <Route path='/mypolls/new' component={NewPoll} />
+            <Route exact path='/mypolls' component={MyPolls} />
             <Route path='/signup' component={SignUp} />
             <Route path='/reset/:email/:token' component={ResetPassword} />
             <Route path='/verify/:email/:token' component={VerifyAccount} />

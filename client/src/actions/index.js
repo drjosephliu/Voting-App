@@ -136,3 +136,7 @@ export const resendVerificationToken = email => async dispatch => {
     dispatch(tokenError(err.response.data));
   }
 }
+
+export const submitPoll = values => async dispatch => {
+  
+}
