@@ -7,7 +7,8 @@ import {
   SIGNUP_ERROR,
   LOGIN_ERROR,
   FORGOT_PASSWORD_ERROR,
-  TOKEN_ERROR
+  TOKEN_ERROR,
+  FETCH_MY_POLLS
 } from './types';
 
 export const createUser = (values, history) => async dispatch => {
@@ -137,6 +138,20 @@ export const resendVerificationToken = email => async dispatch => {
   }
 }
 
-export const submitPoll = values => async dispatch => {
-  
+export const submitPoll = (values, history) => async dispatch => {
+  const res = await axios.post('/api/polls', values);
+  history.push('/mypolls');
+  dispatch({ type: FETCH_USER, payload: res.data });
+}
+
+export const fetchMyPolls = (skip) => async dispatch => {
+  const res = await axios.get(`/api/mypolls/${skip}`);
+
+  dispatch({ type: FETCH_MY_POLLS, payload: res.data });
+}
+
+export const fetchMoreMyPolls = (skip) => async dispatch => {
+  const res = await axios.get('/api/mypolls/more', skip);
+
+  dispatch({ type: FETCH_MY_POLLS, payload: res.data });
 }

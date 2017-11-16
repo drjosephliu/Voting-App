@@ -6,6 +6,7 @@ const flash = require('connect-flash');
 const cookieSession = require('cookie-session');
 const keys = require('./config/keys');
 require('./models/User');
+require('./models/Poll');
 require('./services/passport');
 
 mongoose.connect(keys.mongoURI);
@@ -28,6 +29,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 require('./routes/authRoutes')(app);
+require('./routes/pollRoutes')(app);
 
 
 if (process.env.NODE_ENV === 'production') {

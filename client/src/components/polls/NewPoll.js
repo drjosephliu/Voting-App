@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { reduxForm, Field, FieldArray, arrayPush } from 'redux-form';
 import * as actions from '../../actions';
+import { withRouter } from 'react-router-dom';
 // import renderOption from './renderOption';
 // import Loading from '../Loading';
 
@@ -126,8 +127,8 @@ class NewPoll extends Component {
   }
 
   onPollSubmit(values) {
-    console.log('values:', values);
-    this.props.submitPoll(values);
+    const { history } = this.props;
+    this.props.submitPoll(values, history);
   }
 
   render() {
@@ -154,7 +155,8 @@ class NewPoll extends Component {
             </div>
             <button
               type='text'
-              className='red lighten-2 btn waves-effect waves-light' onClick={this.onAddOption}
+              className='red lighten-2 btn waves-effect waves-light'
+              onClick={this.onAddOption}
               disabled={!this.state.option}
             >
               Add Option
@@ -198,4 +200,4 @@ NewPoll = reduxForm({
 })(NewPoll);
 
 
-export default connect(null, actions)(NewPoll);
+export default connect(null, actions)(withRouter(NewPoll));
