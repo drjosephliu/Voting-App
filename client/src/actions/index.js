@@ -149,9 +149,3 @@ export const fetchMyPolls = (skip) => async dispatch => {
 
   dispatch({ type: FETCH_MY_POLLS, payload: res.data });
 }
-
-export const fetchMoreMyPolls = (skip) => async dispatch => {
-  const res = await axios.get('/api/mypolls/more', skip);
-
-  dispatch({ type: FETCH_MY_POLLS, payload: res.data });
-}

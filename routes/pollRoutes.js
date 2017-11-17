@@ -25,19 +25,7 @@ module.exports = app => {
     Poll.find({ _user: req.user.id })
       .sort({ dateCreated: -1 })
       .skip(parseInt(req.params.skip))
-      .limit(5)
-      .then(polls => {
-        res.send(polls);
-      });
-  });
-
-  app.get('/api/mypolls/more', requireLogin, (req, res) => {
-
-    console.log('req:', req);
-    Poll.find({ _user: req.user.id })
-      .sort({ dateCreated: -1 })
-      .skip(5)
-      .limit(5)
+      .limit(4)
       .then(polls => {
         res.send(polls);
       });
