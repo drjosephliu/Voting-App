@@ -48,7 +48,6 @@ class MyPolls extends Component {
   }
 
   handleSubmit(e) {
-    console.log('title:', e.target.value);
     e.preventDefault();
   }
 
