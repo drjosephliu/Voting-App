@@ -47,23 +47,34 @@ class MyPolls extends Component {
     }, 1000);
   }
 
-  handleSubmit(e) {
+  handleSubmit(title, e) {
+    // console.log(e.target);
     e.preventDefault();
+    const vote = {
+      title,
+      option: this.state.value
+    };
+
+    console.log(vote)
   }
 
   handleChange(event) {
-    console.log(event.target.value);
     this.setState({ value: event.target.value });
   }
 
   renderPolls() {
     return this.props.polls.map(poll => {
       return (
-        <div className='card' key={poll._id} style={{ width: '350px', height: '400px' }}>
+        <div
+          className='card'
+          key={poll._id}
+          style={{ width: '350px', height: '400px' }}>
           <div className='card-content'>
             <span className='card-title'>{poll.title}</span>
-            <p>Total votes: {poll.options.reduce((acc, cur) => { return acc + cur.votes }, 0)}</p>
-            <form onSubmit={this.handleSubmit}>
+            <p>
+              Total votes: {poll.options.reduce((acc, cur) => { return acc + cur.votes }, 0)}
+            </p>
+            <form onSubmit={e => this.handleSubmit(poll.title, e)}>
               {poll.options.map(option => {
                 return (
                   <p key={option._id}>
@@ -75,7 +86,9 @@ class MyPolls extends Component {
                       value={option.option}
                       onChange={this.handleChange}
                     />
-                    <label htmlFor={option._id}>{option.option}</label>
+                    <label htmlFor={option._id}>
+                      {option.option}
+                    </label>
                   </p>
                 )
               })}
@@ -114,7 +127,14 @@ class MyPolls extends Component {
       <div className='center-align container'>
         <h2>My Polls</h2>
         {this.state.isLoading ? <Loading size='big' /> :
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly', alignItems: 'center', alignContent: 'center' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'space-evenly',
+            alignItems: 'center',
+            alignContent: 'center'
+          }}>
           {this.renderPolls()}
         </div>}
         <div className='row'>
