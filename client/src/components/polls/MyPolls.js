@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import Loading from '../Loading';
+import Poll from './Poll';
 
 class MyPolls extends Component {
   constructor(props) {
@@ -10,10 +11,7 @@ class MyPolls extends Component {
       skip: 0,
       isLoading: true,
       isLoadingMore: false,
-      value: ''
     };
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
@@ -28,9 +26,7 @@ class MyPolls extends Component {
       });
   }
 
-  sumVotes(acc, cur) {
-    return acc.votes + cur.votes
-  }
+
 
   loadMore(skip) {
     this.setState({ isLoadingMore: true });
@@ -47,82 +43,20 @@ class MyPolls extends Component {
     }, 1000);
   }
 
-  handleSubmit(title, e) {
-    // console.log(e.target);
-    e.preventDefault();
-    const vote = {
-      title,
-      option: this.state.value
-    };
-
-    console.log(vote)
-  }
-
-  handleChange(event) {
-    this.setState({ value: event.target.value });
-  }
-
   renderPolls() {
     return this.props.polls.map(poll => {
       return (
-        <div
-          className='card'
+        <Poll
           key={poll._id}
-          style={{ width: '350px', height: '400px' }}>
-          <div className='card-content'>
-            <span className='card-title'>{poll.title}</span>
-            <p>
-              Total votes: {poll.options.reduce((acc, cur) => { return acc + cur.votes }, 0)}
-            </p>
-            <form onSubmit={e => this.handleSubmit(poll.title, e)}>
-              {poll.options.map(option => {
-                return (
-                  <p key={option._id}>
-                    <input
-                      name={poll.title}
-                      className='with-gap'
-                      type='radio'
-                      id={option._id}
-                      value={option.option}
-                      onChange={this.handleChange}
-                    />
-                    <label htmlFor={option._id}>
-                      {option.option}
-                    </label>
-                  </p>
-                )
-              })}
-
-              <button
-                type='text'
-                className='activator teal btn waves-effect waves-light'
-                style={{
-                  position: 'absolute',
-                  bottom: '10%',
-                  transform: 'translateX(-50%)'
-                }}
-                >
-                Submit
-                <i className='material-icons right'>
-                  send
-                </i>
-              </button>
-            </form>
-          </div>
-          <div className='card-reveal'>
-            <span className='card-title'>{poll.title}
-              <i className='material-icons right'>close</i>
-            </span>
-            <p>
-              dsfasfasdf
-            </p>
-          </div>
-        </div>
+          title={poll.title}
+          options={poll.options}
+        />
       )
     })
   }
 
   render() {
+    console.log(this.props.polls);
     return (
       <div className='center-align container'>
         <h2>My Polls</h2>

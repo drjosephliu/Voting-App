@@ -30,4 +30,20 @@ module.exports = app => {
         res.send(polls);
       });
   });
+
+  app.post('/api/poll', (req, res) => {
+    const { title, chosenOption } = req.body;
+
+    Poll.findOne({ title: title })
+      .then(poll => {
+
+        const option = poll.options.find(optionElement => {
+          return optionElement.option === chosenOption;
+        });
+
+        option.votes += 1;
+        poll.save();
+        res.send(poll);
+      });
+  });
 };
