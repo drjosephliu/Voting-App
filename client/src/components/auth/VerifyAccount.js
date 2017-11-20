@@ -14,7 +14,7 @@ class VerifyAccount extends Component {
   render() {
     const { email } = this.props.match.params;
     return (
-      <div>
+      <div className='container'>
         {this.props.msg.token &&
           <div>
             <div className='red-text'>

@@ -22,7 +22,7 @@ class SignUp extends Component {
 
   render() {
     return (
-      <div>
+      <div className='container'>
         <h2>Sign Up</h2>
         <div className='red-text'>
           {this.props.msg.signup}

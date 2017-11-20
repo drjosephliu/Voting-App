@@ -49,7 +49,7 @@ class ResetPassword extends Component {
 
   render() {
     return(
-      <div>
+      <div className='container'>
         <h2>Reset Password</h2>
         {this.renderContent()}
       </div>

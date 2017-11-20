@@ -57,6 +57,7 @@ class MyPolls extends Component {
 
   render() {
     console.log(this.props.polls);
+    console.log('skip:', this.state.skip);
     return (
       <div className='center-align container'>
         <h2>My Polls</h2>

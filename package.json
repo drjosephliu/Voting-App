@@ -25,6 +25,8 @@
     "cookie-session": "^2.0.0-beta.3",
     "cors": "^2.8.4",
     "express": "^4.15.5",
+    "getmac": "^1.2.1",
+    "ip": "^1.1.5",
     "mongoose": "^4.12.1",
     "nodemon": "^1.12.1",
     "passport": "^0.4.0",

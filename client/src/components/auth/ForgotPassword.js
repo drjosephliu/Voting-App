@@ -12,7 +12,7 @@ class ForgotPassword extends Component {
 
   render() {
     return (
-      <div>
+      <div className='container'>
         <h2>Forgot Password</h2>
         <div className='red-text'>
           {this.props.msg.forgotPassword}

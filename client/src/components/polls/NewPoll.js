@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 import { reduxForm, Field, FieldArray, arrayPush } from 'redux-form';
 import * as actions from '../../actions';
 import { withRouter } from 'react-router-dom';
-// import renderOption from './renderOption';
-// import Loading from '../Loading';
 
 const cardStyle = {
   width: '500px',
