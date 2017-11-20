@@ -9,7 +9,8 @@ import {
   FORGOT_PASSWORD_ERROR,
   TOKEN_ERROR,
   FETCH_MY_POLLS,
-  UPDATE_POLL
+  UPDATE_POLL,
+  VOTE_ERROR
 } from './types';
 
 export const createUser = (values, history) => async dispatch => {
@@ -152,7 +153,16 @@ export const fetchMyPolls = (skip) => async dispatch => {
 }
 
 export const submitVote = vote => async dispatch => {
+  try {
+    const res = await axios.post('/api/poll', vote);
+    dispatch ({ type: UPDATE_POLL, payload: res.data });
+    dispatch(deleteMessage());
+  }
+  catch(err) {
+    dispatch(voteError(err.response.data));
+  }
+}
 
-  const res = await axios.post('/api/poll', vote);
-  dispatch ({ type: UPDATE_POLL, payload: res.data });
+export const voteError = msg => {
+  return { type: VOTE_ERROR, payload: msg };
 }

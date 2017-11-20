@@ -7,7 +7,8 @@ class Poll extends Component {
     super(props);
     this.state = {
       value: '',
-      error: ''
+      error: '',
+      showResults: false
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -15,16 +16,23 @@ class Poll extends Component {
 
   handleSubmit(title, e) {
     e.preventDefault();
+    const vote = {
+      title,
+      chosenOption: this.state.value
+    };
 
     if (!this.state.value) {
       this.setState({ error: 'Please select an option' });
     } else {
-      const vote = {
-        title,
-        chosenOption: this.state.value
-      };
-
-      this.props.submitVote(vote);
+      console.log('vote:', vote);
+      this.props.submitVote(vote)
+        .then(() => {
+          this.setState({ error: this.props.msg.vote }, () => {
+            if (this.state.value && !this.state.error) {
+              this.setState({ showResults: true });
+            }
+          });
+        });
     }
   }
 
@@ -34,6 +42,9 @@ class Poll extends Component {
 
   render() {
     const { title, options } = this.props;
+
+    console.log('msg:', this.props.msg);
+    console.log('error:', this.state.error);
     return (
       <div
         className='card'
@@ -74,7 +85,7 @@ class Poll extends Component {
               </div>
               <button
                 type='text'
-                className={`teal btn waves-effect waves-light  ${this.state.value && 'activator'}`}
+                className={`teal btn waves-effect waves-light  ${this.state.showResults && 'activator'}`}
                 >
                 Submit
                 <i className='material-icons right'>
@@ -97,4 +108,8 @@ class Poll extends Component {
   }
 }
 
-export default connect(null, actions)(Poll);
+function mapStateToProps({ msg }) {
+  return { msg };
+}
+
+export default connect(mapStateToProps, actions)(Poll);

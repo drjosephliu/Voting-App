@@ -34,10 +34,6 @@ module.exports = app => {
   app.post('/api/poll', (req, res) => {
     const { title, chosenOption } = req.body;
 
-    console.log('user:', req.user.id);
-    console.log('IP:', ip.address());
-
-
     Poll.findOne({ title: title })
       .then(poll => {
 
@@ -48,10 +44,14 @@ module.exports = app => {
         console.log(option);
 
         getmac.getMac((err, mac) => {
-          if (poll.voted.MACaddress.indexOf(mac) || poll.voted.IPaddress.indexOf(ip.address()) || poll.voted.userID.indexOf(req.user.id)) {
-            console.log('You have already voted!')
-          } else {
-            console.log('Vote submitted');
+          if (poll.voted.MACaddress.indexOf(mac) === -1 || poll.voted.IPaddress.indexOf(ip.address()) === -1 || poll.voted.userID.indexOf(req.user.id) === -1) {
+
+
+            if (poll._user == req.user.id) {
+              console.log("You can't vote on your own poll!")
+              return res.status(400).send("You can't vote on your own poll!");
+            }
+
             option.votes += 1;
 
             poll.voted.IPaddress.push(ip.address());
@@ -59,12 +59,18 @@ module.exports = app => {
             if (req.user.id) {
               poll.voted.userID.push(req.user.id);
             }
+
+            console.log(poll);
+            poll.save();
+            res.send(poll);
+
+          } else {
+            console.log('You have already voted')
+            res.status(400).send('You have already voted')
           }
         });
 
 
-        poll.save();
-        res.send(poll);
       });
   });
 };

@@ -1,6 +1,12 @@
-import { DELETE_MESSAGE, SIGNUP_ERROR, LOGIN_ERROR, FORGOT_PASSWORD_ERROR, TOKEN_ERROR } from '../actions/types';
+import { DELETE_MESSAGE, SIGNUP_ERROR, LOGIN_ERROR, FORGOT_PASSWORD_ERROR, TOKEN_ERROR, VOTE_ERROR } from '../actions/types';
 
-const INITIAL_STATE = { login: null, signup: null, forgotPassword: null, token: null };
+const INITIAL_STATE = {
+  login: null,
+  signup: null,
+  forgotPassword: null,
+  token: null,
+  vote: null
+};
 
 export default function(state = INITIAL_STATE, action) {
   switch (action.type) {
@@ -12,6 +18,8 @@ export default function(state = INITIAL_STATE, action) {
       return { ...state, forgotPassword: action.payload };
     case TOKEN_ERROR:
       return { ...state, token: action.payload };
+    case VOTE_ERROR:
+      return { ...state, vote: action.payload };
     case DELETE_MESSAGE:
       return INITIAL_STATE;
     default:
