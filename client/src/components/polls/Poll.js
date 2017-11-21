@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
+import PollResults from './PollResults';
 
 class Poll extends Component {
   constructor(props) {
     super(props);
     this.state = {
       value: '',
-      error: '',
-      showResults: false
+      error: null
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -24,14 +24,9 @@ class Poll extends Component {
     if (!this.state.value) {
       this.setState({ error: 'Please select an option' });
     } else {
-      console.log('vote:', vote);
       this.props.submitVote(vote)
         .then(() => {
-          this.setState({ error: this.props.msg.vote }, () => {
-            if (this.state.value && !this.state.error) {
-              this.setState({ showResults: true });
-            }
-          });
+          this.setState({ error: this.props.msg.vote });
         });
     }
   }
@@ -43,8 +38,6 @@ class Poll extends Component {
   render() {
     const { title, options } = this.props;
 
-    console.log('msg:', this.props.msg);
-    console.log('error:', this.state.error);
     return (
       <div
         className='card'
@@ -85,23 +78,26 @@ class Poll extends Component {
               </div>
               <button
                 type='text'
-                className={`teal btn waves-effect waves-light  ${this.state.showResults && 'activator'}`}
+                className={`teal btn waves-effect waves-light ${this.state.value && !this.state.error && 'activator'}`}
+                style={{ marginBottom: '1rem' }}
                 >
                 Submit
                 <i className='material-icons right'>
                   send
                 </i>
               </button>
+              <div className='row'>
+                <a href='#' className='activator'>Show Results</a>
+              </div>
+
             </div>
           </form>
         </div>
         <div className='card-reveal'>
-          <span className='card-title'>{title}
-            <i className='material-icons right'>close</i>
-          </span>
-          <p>
-            dsfasfasdf
-          </p>
+          <PollResults
+            title={title}
+            options={options}
+          />
         </div>
       </div>
     )

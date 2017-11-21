@@ -17,7 +17,7 @@ module.exports = app => {
     });
 
     poll.save();
-    res.send(req.user);
+    res.send(poll);
   });
 
   app.get('/api/mypolls/:skip', requireLogin, (req, res) => {
@@ -41,17 +41,16 @@ module.exports = app => {
           return optionElement.option === chosenOption;
         });
 
-        console.log(option);
 
         getmac.getMac((err, mac) => {
           if (poll.voted.MACaddress.indexOf(mac) === -1 || poll.voted.IPaddress.indexOf(ip.address()) === -1 || poll.voted.userID.indexOf(req.user.id) === -1) {
 
 
             if (poll._user == req.user.id) {
-              console.log("You can't vote on your own poll!")
               return res.status(400).send("You can't vote on your own poll!");
             }
 
+            console.log('option:', option);
             option.votes += 1;
 
             poll.voted.IPaddress.push(ip.address());
@@ -60,17 +59,33 @@ module.exports = app => {
               poll.voted.userID.push(req.user.id);
             }
 
-            console.log(poll);
             poll.save();
             res.send(poll);
 
           } else {
-            console.log('You have already voted')
             res.status(400).send('You have already voted')
           }
         });
-
-
       });
   });
+
+  app.get('/api/allpolls/:skip', (req, res) => {
+    Poll.find({ _user: { $ne: req.user.id } })
+      .sort({ dateCreated: -1 })
+      .skip(parseInt(req.params.skip))
+      .limit(4)
+      .then(polls => {
+        res.send(polls);
+      });
+  });
+
+  app.delete('/api/poll/:id', (req, res) => {
+    Poll.findByIdAndRemove(req.params.id)
+      .exec()
+      .then(poll => {
+        if (!poll) return res.status(404).send('Poll not found!');
+        console.log('delete:', poll);
+        return res.send(poll);
+      });
+  })
 };

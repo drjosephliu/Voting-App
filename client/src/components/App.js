@@ -9,7 +9,7 @@ import ResetPassword from './auth/ResetPassword';
 import VerifyAccount from './auth/VerifyAccount';
 import NewPoll from './polls/NewPoll';
 import MyPolls from './polls/MyPolls';
-
+import AllPolls from './polls/AllPolls';
 const Landing = () => <h2>Landing</h2>;
 const Dashboard = () => <h2>Dashboard</h2>;
 
@@ -19,13 +19,12 @@ class App extends Component {
   }
 
   render() {
-    console.log('auth:', this.props.auth);
     return (
       <div>
         <BrowserRouter>
           <div>
             <Header />
-            <Route exact path='/' component={Landing} />
+            <Route exact path='/' component={this.props.auth ? AllPolls : Landing} />
             <Route exact path='/dashboard' component={Dashboard} />
             <Route path='/mypolls/new' component={NewPoll} />
             <Route exact path='/mypolls' component={MyPolls} />

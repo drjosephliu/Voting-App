@@ -3,9 +3,8 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import Loading from '../Loading';
 import Poll from './Poll';
-import PollResults from './PollResults';
 
-class MyPolls extends Component {
+class AllPolls extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,7 +15,7 @@ class MyPolls extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchMyPolls(this.state.skip)
+    this.props.fetchAllPolls(this.state.skip)
       .then(() => {
           this.setState({
           skip: this.state.skip + 4,
@@ -30,7 +29,7 @@ class MyPolls extends Component {
   loadMore(skip) {
     this.setState({ isLoadingMore: true });
 
-    this.props.fetchMoreMyPolls(skip)
+    this.props.fetchMoreAllPolls(skip)
       .then(() => {
         const nextSkip = this.state.skip + 4;
         this.setState({
@@ -38,29 +37,17 @@ class MyPolls extends Component {
           isLoadingMore: false
         });
       });
-  }
-
-  confirmDelete(id) {
-    if (window.confirm('Are you sure?')) {
-      this.props.deletePoll(id);
-    }
 
   }
 
   renderPolls() {
-    return this.props.myPolls.map(poll => {
+    return this.props.allPolls.map(poll => {
       return (
-        <div
+        <Poll
           key={poll._id}
-          className='card'
-          style={{ width: '350px', height: '400px' }}>
-          <PollResults
-            key={poll._id}
-            title={poll.title}
-            options={poll.options}
-            onClick={() => this.confirmDelete(poll._id)}
-          />
-        </div>
+          title={poll.title}
+          options={poll.options}
+        />
       )
     })
   }
@@ -69,7 +56,7 @@ class MyPolls extends Component {
 
     return (
       <div className='center-align container'>
-        <h2>My Polls</h2>
+        <h2>All Polls</h2>
         {this.state.isLoading ? <Loading size='big' /> :
         <div
           style={{
@@ -94,8 +81,8 @@ class MyPolls extends Component {
   }
 }
 
-function mapStateToProps({ myPolls }) {
-  return { myPolls }
+function mapStateToProps({ allPolls }) {
+  return { allPolls }
 }
 
-export default connect(mapStateToProps, actions)(MyPolls);
+export default connect(mapStateToProps, actions)(AllPolls);

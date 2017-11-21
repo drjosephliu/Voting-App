@@ -8,9 +8,14 @@ import {
   LOGIN_ERROR,
   FORGOT_PASSWORD_ERROR,
   TOKEN_ERROR,
+  CREATE_POLL,
   FETCH_MY_POLLS,
+  FETCH_MORE_MY_POLLS,
   UPDATE_POLL,
-  VOTE_ERROR
+  VOTE_ERROR,
+  FETCH_ALL_POLLS,
+  FETCH_MORE_ALL_POLLS,
+  DELETE_POLL
 } from './types';
 
 export const createUser = (values, history) => async dispatch => {
@@ -143,26 +148,52 @@ export const resendVerificationToken = email => async dispatch => {
 export const submitPoll = (values, history) => async dispatch => {
   const res = await axios.post('/api/polls', values);
   history.push('/mypolls');
-  dispatch({ type: FETCH_USER, payload: res.data });
+  dispatch({ type: CREATE_POLL, payload: res.data });
 }
 
-export const fetchMyPolls = (skip) => async dispatch => {
+export const fetchMyPolls = skip => async dispatch => {
   const res = await axios.get(`/api/mypolls/${skip}`);
 
   dispatch({ type: FETCH_MY_POLLS, payload: res.data });
 }
 
+export const fetchMoreMyPolls = skip => async dispatch => {
+  const res = await axios.get(`/api/mypolls/${skip}`);
+
+  dispatch({ type: FETCH_MORE_MY_POLLS, payload: res.data });
+}
+
 export const submitVote = vote => async dispatch => {
   try {
     const res = await axios.post('/api/poll', vote);
+    dispatch(voteError(false));
     dispatch ({ type: UPDATE_POLL, payload: res.data });
     dispatch(deleteMessage());
   }
   catch(err) {
-    dispatch(voteError(err.response.data));
+    // dispatch(voteError(err.response.data));
+    window.Materialize.toast(err.response.data, 1000);
   }
 }
 
 export const voteError = msg => {
   return { type: VOTE_ERROR, payload: msg };
+}
+
+export const fetchAllPolls = skip => async dispatch => {
+  const res = await axios.get(`/api/allpolls/${skip}`);
+
+  dispatch({ type: FETCH_ALL_POLLS, payload: res.data });
+}
+
+export const fetchMoreAllPolls = skip => async dispatch => {
+  const res = await axios.get(`/api/allpolls/${skip}`);
+
+  dispatch({ type: FETCH_MORE_ALL_POLLS, payload: res.data });
+}
+
+export const deletePoll = id => async dispatch => {
+  const res = await axios.delete(`/api/poll/${id}`);
+  console.log('res:', res.data);
+  dispatch({ type: DELETE_POLL, payload: res.data });
 }
