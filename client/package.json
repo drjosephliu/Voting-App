@@ -12,11 +12,13 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
+    "highcharts": "^6.0.3",
     "lodash": "^4.17.4",
     "materialize-css": "^0.100.2",
     "materialize-social": "^1.0.3",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
+    "react-highcharts": "^15.0.0",
     "react-redux": "^5.0.6",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.14",

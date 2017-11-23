@@ -53,6 +53,7 @@ class AllPolls extends Component {
   }
 
   render() {
+    const displayButton = this.props.noMore.allPolls ? { display: 'none' } : { display: 'inline-block' }
 
     return (
       <div className='center-align container'>
@@ -71,7 +72,10 @@ class AllPolls extends Component {
         <div className='row'>
           {this.state.isLoadingMore ? <Loading size='small' /> :
           <button
-            className='btn red lighten-2 wave-effect waves-light' onClick={() => this.loadMore(this.state.skip)}>
+            className='btn red lighten-2 wave-effect waves-light'
+            onClick={() => this.loadMore(this.state.skip)}
+            style={displayButton}
+            >
             Load More
           </button>}
         </div>
@@ -81,8 +85,8 @@ class AllPolls extends Component {
   }
 }
 
-function mapStateToProps({ allPolls }) {
-  return { allPolls }
+function mapStateToProps({ allPolls, noMore }) {
+  return { allPolls, noMore }
 }
 
 export default connect(mapStateToProps, actions)(AllPolls);

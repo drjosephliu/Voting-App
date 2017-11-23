@@ -15,7 +15,9 @@ import {
   VOTE_ERROR,
   FETCH_ALL_POLLS,
   FETCH_MORE_ALL_POLLS,
-  DELETE_POLL
+  DELETE_POLL,
+  NO_MORE_ALL_POLLS,
+  NO_MORE_MY_POLLS
 } from './types';
 
 export const createUser = (values, history) => async dispatch => {
@@ -160,6 +162,7 @@ export const fetchMyPolls = skip => async dispatch => {
 export const fetchMoreMyPolls = skip => async dispatch => {
   const res = await axios.get(`/api/mypolls/${skip}`);
 
+  if (res.data.length === 0) dispatch(noMoreMyPolls());
   dispatch({ type: FETCH_MORE_MY_POLLS, payload: res.data });
 }
 
@@ -189,6 +192,7 @@ export const fetchAllPolls = skip => async dispatch => {
 export const fetchMoreAllPolls = skip => async dispatch => {
   const res = await axios.get(`/api/allpolls/${skip}`);
 
+  if (res.data.length === 0) dispatch(noMoreAllPolls());
   dispatch({ type: FETCH_MORE_ALL_POLLS, payload: res.data });
 }
 
@@ -196,4 +200,12 @@ export const deletePoll = id => async dispatch => {
   const res = await axios.delete(`/api/poll/${id}`);
   console.log('res:', res.data);
   dispatch({ type: DELETE_POLL, payload: res.data });
+}
+
+export const noMoreAllPolls = () => {
+  return { type: NO_MORE_ALL_POLLS, payload: true };
+}
+
+export const noMoreMyPolls = () => {
+  return { type: NO_MORE_MY_POLLS, payload: true };
 }

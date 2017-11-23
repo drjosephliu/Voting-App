@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import Loading from '../Loading';
-import Poll from './Poll';
 import PollResults from './PollResults';
 
 class MyPolls extends Component {
@@ -66,6 +65,7 @@ class MyPolls extends Component {
   }
 
   render() {
+    const displayButton = this.props.noMore.myPolls ? { display: 'none' } : { display: 'inline-block' }
 
     return (
       <div className='center-align container'>
@@ -84,7 +84,10 @@ class MyPolls extends Component {
         <div className='row'>
           {this.state.isLoadingMore ? <Loading size='small' /> :
           <button
-            className='btn red lighten-2 wave-effect waves-light' onClick={() => this.loadMore(this.state.skip)}>
+            className='btn red lighten-2 wave-effect waves-light'
+            onClick={() => this.loadMore(this.state.skip)}
+            style={displayButton}
+            >
             Load More
           </button>}
         </div>
@@ -94,8 +97,8 @@ class MyPolls extends Component {
   }
 }
 
-function mapStateToProps({ myPolls }) {
-  return { myPolls }
+function mapStateToProps({ myPolls, noMore }) {
+  return { myPolls, noMore }
 }
 
 export default connect(mapStateToProps, actions)(MyPolls);

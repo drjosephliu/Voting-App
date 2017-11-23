@@ -87,13 +87,13 @@ class Poll extends Component {
                 </i>
               </button>
               <div className='row'>
-                <a href='#' className='activator'>Show Results</a>
+                <a href='#' className='activator' onClick={e => e.preventDefault()}>Show Results</a>
               </div>
 
             </div>
           </form>
         </div>
-        <div className='card-reveal'>
+        <div className='card-reveal' style={{ border: '2px solid green', padding: '1rem' }}>
           <PollResults
             title={title}
             options={options}

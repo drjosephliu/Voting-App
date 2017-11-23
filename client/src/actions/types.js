@@ -14,3 +14,5 @@ export const VOTE_ERROR = 'vote_error';
 export const FETCH_ALL_POLLS = 'fetch_all_polls';
 export const FETCH_MORE_ALL_POLLS = 'fetch_more_all_polls';
 export const DELETE_POLL = 'delete_poll';
+export const NO_MORE_ALL_POLLS = 'no_more_all_polls';
+export const NO_MORE_MY_POLLS = 'no_more_my_polls';

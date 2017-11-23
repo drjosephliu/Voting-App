@@ -5,6 +5,7 @@ import msgReducer from './msgReducer';
 import modalReducer from './modalReducer';
 import myPollsReducer from './myPollsReducer';
 import allPollsReducer from './allPollsReducer';
+import noMorePollsReducer from './noMorePollsReducer';
 
 export default combineReducers({
   form: reduxForm,
@@ -12,5 +13,6 @@ export default combineReducers({
   msg: msgReducer,
   modal: modalReducer,
   myPolls: myPollsReducer,
-  allPolls: allPollsReducer
+  allPolls: allPollsReducer,
+  noMore: noMorePollsReducer
 });
