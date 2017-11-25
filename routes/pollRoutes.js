@@ -70,13 +70,35 @@ module.exports = app => {
   });
 
   app.get('/api/allpolls/:skip', (req, res) => {
-    Poll.find({ _user: { $ne: req.user.id } })
-      .sort({ dateCreated: -1 })
-      .skip(parseInt(req.params.skip))
-      .limit(4)
-      .then(polls => {
-        res.send(polls);
-      });
+
+    function checkUser() {
+      console.log('user:', req.user);
+      if (!req.user) {
+        return {};
+      } else {
+        return { _user: { $ne: req.user.id } };
+      }
+    }
+
+    if (!req.user) {
+      Poll.find({})
+        .sort({ dateCreated: -1 })
+        .skip(parseInt(req.params.skip))
+        .limit(4)
+        .then(polls => {
+          return res.send(polls)
+        });
+    } else {
+      Poll.find({ _user: { $ne: req.user.id } })
+        .sort({ dateCreated: -1 })
+        .skip(parseInt(req.params.skip))
+        .limit(4)
+        .then(polls => {
+          res.send(polls);
+        });
+    }
+
+
   });
 
   app.delete('/api/poll/:id', (req, res) => {

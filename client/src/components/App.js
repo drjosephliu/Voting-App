@@ -10,8 +10,6 @@ import VerifyAccount from './auth/VerifyAccount';
 import NewPoll from './polls/NewPoll';
 import MyPolls from './polls/MyPolls';
 import AllPolls from './polls/AllPolls';
-const Landing = () => <h2>Landing</h2>;
-const Dashboard = () => <h2>Dashboard</h2>;
 
 class App extends Component {
   componentDidMount() {
@@ -24,8 +22,7 @@ class App extends Component {
         <BrowserRouter>
           <div>
             <Header />
-            <Route exact path='/' component={this.props.auth ? AllPolls : Landing} />
-            <Route exact path='/dashboard' component={Dashboard} />
+            <Route exact path='/' component={AllPolls} />
             <Route path='/mypolls/new' component={NewPoll} />
             <Route exact path='/mypolls' component={MyPolls} />
             <Route path='/signup' component={SignUp} />
