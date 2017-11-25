@@ -93,7 +93,7 @@ class Poll extends Component {
             </div>
           </form>
         </div>
-        <div className='card-reveal' style={{ border: '2px solid green', padding: '1rem' }}>
+        <div className='card-reveal' style={{ padding: '1rem' }}>
           <PollResults
             title={title}
             options={options}

@@ -5,6 +5,9 @@ class PollResults extends Component {
 
   render() {
     const { title, options } = this.props;
+    const totalVotes = options.reduce((acc, curr) => { return acc + curr.votes}, 0);
+    const pointWidth = 20;
+
     const config = {
       chart: {
         type: 'bar',
@@ -12,28 +15,38 @@ class PollResults extends Component {
         spacingRight: 0,
         spacingBottom: 0,
         spacingLeft: 0,
-        // marginTop: 0,
-        // marginRight: 0,
-        // marginBottom: 0,
-        // marginLeft: 0
+        marginBottom: 0,
+        height: pointWidth * options.length + 10,
       },
       title: {
         text: null
       },
+      colors: ['#4CB5F5'],
       legend: {
         enabled: false
+      },
+      tooltip: {
+        formatter: function() {
+          return `<b>${this.x}:</b> ${this.y} votes`;
+        }
       },
       credits: {
         text: ''
       },
       xAxis: {
         categories: options.map(option => option.option),
-        // lineWidth: 0,
-        // tickWidth: 0,
+        scrollbar: {
+          enabled: true
+        },
+        lineWidth: 0,
+        tickWidth: 0,
       },
       yAxis: {
         title: {
           enabled: false,
+          scrollbar: {
+            enabled: true
+          }
         },
         gridLineWidth: 0,
         tickAmount: 0,
@@ -45,22 +58,22 @@ class PollResults extends Component {
       }],
       plotOptions: {
         bar: {
-          // groupPadding: 0,
-          // pointPadding: 0,
+          groupPadding: 0,
+          pointPadding: 0,
+          pointWidth: pointWidth,
           dataLabels: {
-            enabled: true
+            enabled: true,
+            formatter: function() {
+              if (totalVotes === 0) return '0%'
+              return `${((this.y / totalVotes) * 100).toFixed(1)}%`
+            }
           }
-        },
-        series: {
-          pointWidth: 20,
-          groundPadding: 0,
-          pointPadding: 0
         }
       }
     };
 
     return (
-      <div className='card-content' style={{ border: '2px solid blue', padding: '0' }}>
+      <div className='card-content' style={{ padding: '0', width: '100%', height: '100%' }}>
         <span className='card-title'>{title}
           <i
             className='material-icons right'
@@ -70,7 +83,7 @@ class PollResults extends Component {
             close
           </i>
         </span>
-        <div style={{ width: '100%', height: '100%', margin: 'auto', border: '2px solid red' }}>
+        <div style={{ margin: '10% auto' }}>
           <ReactHighCharts config={config}></ReactHighCharts>
         </div>
       </div>

@@ -52,7 +52,11 @@ class MyPolls extends Component {
         <div
           key={poll._id}
           className='card'
-          style={{ width: '350px', height: '400px' }}>
+          style={{
+            width: '350px',
+            height: '400px',
+            padding: '1rem' 
+          }}>
           <PollResults
             key={poll._id}
             title={poll.title}
