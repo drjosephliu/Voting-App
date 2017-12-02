@@ -59,7 +59,7 @@ class Header extends Component {
       <div>
         <nav>
           <div className='nav-wrapper'>
-            <Link to='/' className='left brand-logo'>
+            <Link to='/' className='left brand-logo' style={{ margin: 'auto 20px'}}>
               Voting App
             </Link>
             <ul className='right'>

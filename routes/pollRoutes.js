@@ -43,21 +43,25 @@ module.exports = app => {
 
 
         getmac.getMac((err, mac) => {
-          if (poll.voted.MACaddress.indexOf(mac) === -1 || poll.voted.IPaddress.indexOf(ip.address()) === -1 || poll.voted.userID.indexOf(req.user.id) === -1) {
-
-
-            if (poll._user == req.user.id) {
-              return res.status(400).send("You can't vote on your own poll!");
-            }
+          if (poll.voted.MACaddress.indexOf(mac) === -1 || poll.voted.IPaddress.indexOf(ip.address())) {
 
             console.log('option:', option);
+
             option.votes += 1;
+
+            if (req.user) {
+              if (poll._user == req.user.id) {
+                return res.status(400).send("You can't vote on your own poll!");
+              } else if (poll.voted.userID.indexOf(req.user.id) > -1) {
+                return res.status(400).send('You have already voted');
+              }
+              poll.voted.userID.push(req.user.id);
+            }
 
             poll.voted.IPaddress.push(ip.address());
             poll.voted.MACaddress.push(mac);
-            if (req.user.id) {
-              poll.voted.userID.push(req.user.id);
-            }
+
+            console.log(poll);
 
             poll.save();
             res.send(poll);

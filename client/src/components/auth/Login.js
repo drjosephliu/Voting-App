@@ -22,25 +22,32 @@ class Login extends Component {
   render() {
     return (
       <div>
-        <h2>Login</h2>
+        <h4>Login</h4>
         <div className='red-text'>
           {this.props.msg.login}
         </div>
         <div className='center-align'>
           <a href='/auth/google'
-            className='btn waves-effect waves-light social google'>
+            className='btn waves-effect waves-light social google'
+            style={{ margin: '5px 5px '}}>
             <i className='fa fa-google' aria-hidden='true'></i>
              Login with Google
           </a>
           <a href='/auth/facebook'
-            className='btn waves-effect waves-light social facebook'>
+            className='btn waves-effect waves-light social facebook'
+            style={{ margin: '5px 5px'}}>
             <i className='fa fa-facebook' aria-hidden='true'></i>
              Login with Facebook
           </a>
         </div>
         <form onSubmit={this.props.handleSubmit(this.onSubmit.bind(this))}>
           {this.renderFields()}
-          <button type='submit' className='teal btn waves-effect waves-light white-text'>Login</button>
+          <button
+            type='submit'
+            className='teal btn waves-effect waves-light white-text'
+            style={{ margin: 'auto 20px auto 0'}}>
+            Login
+          </button>
           <a href='#' onClick={() => this.props.showForgotPasswordModal()}>Forgot Password</a>
         </form>
       </div>

@@ -24,7 +24,7 @@ class Modal extends Component {
   render() {
     return (
       <div className='modal' style={this.props.showLoginModal ? display : hide}>
-        <div className='modal-content' style={{ padding: '50px' }}>
+        <div className='modal-content' style={{ padding: '25px' }}>
           {this.renderContent()}
         </div>
       </div>

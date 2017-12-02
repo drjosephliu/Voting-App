@@ -40,6 +40,7 @@ class SignUp extends Component {
 
 function validate(values) {
   const errors = {};
+  console.log('values:',values);
 
   errors.email = validateEmail(values.email);
 
