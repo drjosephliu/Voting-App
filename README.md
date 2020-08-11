@@ -1,8 +1,7 @@
-# Build a Voting App
+# Build a Voting App ([Demo](https://voting-app-drhectapus.herokuapp.com/))
 
 Back-end project from FreeCodeCamp built using React, Node/Express, MongoDB/Mongoose, HighCharts.
 
-[Demo](https://voting-app-drhectapus.herokuapp.com/)
 
 
 #### User stories:
