@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
-    "highcharts": "^6.0.3",
+    "highcharts": "^7.2.2",
     "lodash": "^4.17.4",
     "materialize-css": "^0.100.2",
     "materialize-social": "^1.0.3",
