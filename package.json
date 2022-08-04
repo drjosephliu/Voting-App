@@ -27,7 +27,7 @@
     "express": "^4.16.4",
     "getmac": "^1.4.6",
     "ip": "^1.1.5",
-    "mongoose": "^4.13.17",
+    "mongoose": "^5.7.5",
     "nodemon": "^1.18.8",
     "passport": "^0.4.0",
     "passport-facebook": "^2.1.1",
