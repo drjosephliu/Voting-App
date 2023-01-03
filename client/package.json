@@ -21,7 +21,7 @@
     "react-highcharts": "^15.0.0",
     "react-redux": "^5.0.6",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.0.14",
+    "react-scripts": "5.0.1",
     "redux": "^3.7.2",
     "redux-form": "^7.0.4",
     "redux-thunk": "^2.2.0"
